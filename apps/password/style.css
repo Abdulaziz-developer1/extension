@@ -1,0 +1,109 @@
+/* General reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+  background: #1e1e2e;
+  color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Container */
+.bg {
+  background: #2a2a3d;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  width: 350px;
+  text-align: center;
+}
+
+/* Title */
+h1 {
+  margin-bottom: 20px;
+  font-size: 22px;
+  color: #ffffff;
+}
+
+/* Inputs */
+input[type="number"],
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+/* Number input */
+input[type="number"] {
+  background: #3a3a4f;
+  color: #fff;
+}
+
+/* Result field */
+#result {
+  background: #3a3a4f;
+  color: #00e676;
+  font-weight: bold;
+  letter-spacing: 1px;
+}
+
+/* Flex for checkboxes and result box */
+.flex {
+  display: flex;
+  align-items: center;
+  margin: 8px 0;
+  justify-content: flex-start;
+}
+
+.flex p {
+  margin-left: 8px;
+  font-size: 14px;
+}
+
+/* Buttons */
+button {
+  background: #00bcd4;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  margin-top: 10px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #0097a7;
+}
+
+/* Copy button smaller */
+.result-box {
+  margin-top: 15px;
+}
+
+.result-box input {
+  flex: 1;
+}
+
+.result-box button {
+  margin-left: 10px;
+  padding: 8px 12px;
+  font-size: 12px;
+  background: #4caf50;
+}
+
+.result-box button:hover {
+  background: #43a047;
+}

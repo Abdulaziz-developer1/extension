@@ -1,0 +1,40 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: sans-serif;
+    color: #fff;
+}
+
+.bg{
+    display: flex;
+    width: 100vw;
+    height: 100vh;
+    background-color: black;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.half{
+    width: 30%; 
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-direction: column;
+}
+
+input, button{
+    width: 200px;
+    height: 35px;
+    background: transparent;
+    border: solid;
+    border-radius: 10px;
+}
+
+input{
+    padding: 10px;
+}
+
+#seconds, #timer{
+    height: 35px;
+}

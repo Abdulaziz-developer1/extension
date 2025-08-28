@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>   Translator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="../../images/translator.ico">
+  <style>
+    :root{
+      --bg: #0b0d12;
+      --bg-grad: radial-gradient(1200px 800px at 5% -10%, #1c2230 0%, #0b0d12 60%);
+      --card: #121622;
+      --muted: #8b94a7;
+      --text: #e8eefc;
+      --subtle: #a9b3c9;
+      --accent: #7c7fff;
+      --accent-2: #22c55e;
+      --warn: #f59e0b;
+      --err: #ef4444;
+      --border: #1f2433;
+      --shadow: 0 12px 40px rgba(0,0,0,0.35);
+      --radius: 18px;
+    }
+    *{ box-sizing:border-box }
+    html, body{ height:100% }
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: var(--bg-grad), var(--bg);
+      color: var(--text);
+    }
+
+    .container{
+      max-width: 1100px;
+      margin: 28px auto;
+      padding: 0 16px;
+      display: grid;
+      gap: 16px;
+    }
+
+    header{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+    }
+    .logo{
+      width: 36px; height:36px; border-radius: 10px;
+      background: linear-gradient(135deg, #6366f1, #22d3ee);
+      box-shadow: 0 10px 30px rgba(99,102,241,0.35);
+    }
+    h1{ margin:0; font-size: 20px; letter-spacing:.3px; color: var(--text); }
+
+    .grid{
+      display:grid; gap: 16px;
+      grid-template-columns: 1fr;
+    }
+    @media (min-width: 980px){
+      .grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 360px;
+    }
+
+    .row{ display:flex; align-items:center; gap: 10px; flex-wrap: wrap; }
+    .row.space{ justify-content: space-between; }
+
+    label.small{ font-size: 12px; color: var(--muted); }
+    .select{
+      flex:1 1 220px;
+      background: #0f1422;
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 10px 12px;
+      min-width: 160px;
+    }
+
+    .btn{
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #0f1422;
+      color: var(--text);
+      cursor: pointer;
+      transition: transform .03s ease, filter .15s ease;
+      user-select: none;
+    }
+    .btn:hover{ filter: brightness(1.1); }
+    .btn:active{ transform: translateY(1px); }
+    .btn.primary{
+      background: linear-gradient(135deg, var(--accent), #9a7cff);
+      border: none;
+      box-shadow: 0 10px 30px rgba(124,127,255,0.35);
+    }
+    .btn.ghost{ background: #0d1220; border: 1px dashed var(--border); }
+    .btn.icon{ width:44px; height:44px; border-radius: 999px; font-size: 18px; display:grid; place-items:center; }
+
+    textarea{
+      width: 100%;
+      height: 240px;
+      resize: vertical;
+      background: #0f1422;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      line-height: 1.5;
+    }
+
+    .meta{ color: var(--muted); font-size: 12px; }
+    .status{ font-size: 12px; }
+    .ok{ color: var(--accent-2); }
+    .warn{ color: var(--warn); }
+    .err{ color: var(--err); }
+
+    footer{ color: var(--muted); font-size: 12px; display:flex; justify-content: space-between; align-items:center; gap: 8px; flex-wrap: wrap; }
+    code.badge{
+      background:#0f1422; border:1px solid var(--border);
+      border-radius: 999px; padding: 4px 10px; color: var(--subtle);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Dark Translator</h1>
+          <div class="meta">Translate words to the language you want!</div>
+        </div>
+      </div>
+      <div class="row">
+        <button id="swapBtn" class="btn icon" title="Swap languages" aria-label="Swap">⇆</button>
+        <button id="translateBtn" class="btn primary">Translate</button>
+      </div>
+    </header>
+
+    <div class="row space">
+      <div class="row" style="gap:12px">
+        <div>
+          <label class="small" for="sourceSel">From</label><br/>
+          <select id="sourceSel" class="select">
+            <option value="auto" selected>Auto Detect</option>
+          </select>
+        </div>
+        <div>
+          <label class="small" for="targetSel">To</label><br/>
+          <select id="targetSel" class="select"></select>
+        </div>
+      </div>
+      <div class="meta" id="detectedMeta"></div>
+    </div>
+
+    <section class="grid">
+      <div class="card">
+        <div class="row space">
+          <span class="meta" id="srcCount">0 chars</span>
+          <div class="row">
+            <button id="clearBtn" class="btn ghost">Clear</button>
+            <button id="pasteBtn" class="btn ghost">Paste</button>
+          </div>
+        </div>
+        <textarea id="srcArea" placeholder="Type or paste text…"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="row space">
+          <span class="meta">Translation</span>
+          <div class="row">
+            <button id="copyBtn" class="btn ghost">Copy</button>
+            <button id="speakBtn" class="btn ghost">Speak</button>
+            <button id="downloadBtn" class="btn ghost">Download</button>
+          </div>
+        </div>
+        <textarea id="dstArea" placeholder="Translation will appear here…" readonly></textarea>
+      </div>
+    </section>
+
+    <footer>
+      <span class="status" id="status" aria-live="polite"></span>
+      <span class="meta">Endpoint: <code class="badge" id="endpointBadge">—</code></span>
+    </footer>
+  </div>
+
+  <script>
+    const MIRRORS = [
+      'https://translate.argosopentech.com',
+      'https://translate.astian.org',
+      'https://translate.mentality.rip',
+      'https://trans.zillyhuhn.com'
+    ];
+
+    // --- Elements
+    const sourceSel = document.getElementById('sourceSel');
+    const targetSel = document.getElementById('targetSel');
+    const srcArea   = document.getElementById('srcArea');
+    const dstArea   = document.getElementById('dstArea');
+    const swapBtn   = document.getElementById('swapBtn');
+    const translateBtn = document.getElementById('translateBtn');
+    const clearBtn  = document.getElementById('clearBtn');
+    const pasteBtn  = document.getElementById('pasteBtn');
+    const copyBtn   = document.getElementById('copyBtn');
+    const speakBtn  = document.getElementById('speakBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const statusEl  = document.getElementById('status');
+    const srcCount  = document.getElementById('srcCount');
+    const detectedMeta = document.getElementById('detectedMeta');
+    const endpointBadge = document.getElementById('endpointBadge');
+
+    // --- Hardcoded language list (fallback). These codes match LibreTranslate.
+    const LANGS = [
+      { code:'ar', name:'Arabic' }, { code:'az', name:'Azerbaijani' },
+      { code:'zh', name:'Chinese' }, { code:'cs', name:'Czech' },
+      { code:'da', name:'Danish' },  { code:'nl', name:'Dutch' },
+      { code:'en', name:'English' }, { code:'fi', name:'Finnish' },
+      { code:'fr', name:'French' },  { code:'de', name:'German' },
+      { code:'el', name:'Greek' },   { code:'hi', name:'Hindi' },
+      { code:'hu', name:'Hungarian' },{ code:'id', name:'Indonesian' },
+      { code:'ga', name:'Irish' },   { code:'it', name:'Italian' },
+      { code:'ja', name:'Japanese' },{ code:'ko', name:'Korean' },
+      { code:'fa', name:'Persian' }, { code:'pl', name:'Polish' },
+      { code:'pt', name:'Portuguese' },{ code:'ru', name:'Russian' },
+      { code:'es', name:'Spanish' }, { code:'sv', name:'Swedish' },
+      { code:'tr', name:'Turkish' }, { code:'uk', name:'Ukrainian' },
+      { code:'uz', name:'Uzbek' }
+    ];
+
+    function setStatus(msg, cls=''){ statusEl.textContent = msg; statusEl.className = 'status ' + cls; }
+    function updateCharCount(){ srcCount.textContent = (srcArea.value || '').length + ' chars'; }
+
+    function fillLangSelects(){
+      // Source: keep "auto" + list
+      for (const {code, name} of LANGS){
+        const opt = document.createElement('option');
+        opt.value = code; opt.textContent = name;
+        sourceSel.appendChild(opt);
+      }
+      // Target: list only
+      for (const {code, name} of LANGS){
+        const opt = document.createElement('option');
+        opt.value = code; opt.textContent = name;
+        targetSel.appendChild(opt);
+      }
+      // Defaults
+      sourceSel.value = 'auto';
+      targetSel.value = 'en';
+    }
+
+    async function tryLanguagesFromEndpoint(base){
+      try{
+        const res = await fetch(base.replace(/\/+$/,'') + '/languages', { method:'GET' });
+        if (!res.ok) return false;
+        const data = await res.json();
+        // Refresh selects with endpoint-provided list
+        // preserve current selections if possible
+        const prevSrc = sourceSel.value || 'auto';
+        const prevTgt = targetSel.value || 'en';
+
+        // clear & rebuild
+        sourceSel.innerHTML = '<option value="auto">Auto Detect</option>';
+        targetSel.innerHTML = '';
+        for (const {code, name} of data){
+          const o1 = document.createElement('option');
+          o1.value = code; o1.textContent = name || code.toUpperCase();
+          sourceSel.appendChild(o1);
+          const o2 = document.createElement('option');
+          o2.value = code; o2.textContent = name || code.toUpperCase();
+          targetSel.appendChild(o2);
+        }
+        // restore
+        sourceSel.value = [...sourceSel.options].some(o=>o.value===prevSrc) ? prevSrc : 'auto';
+        targetSel.value = [...targetSel.options].some(o=>o.value===prevTgt) ? prevTgt : 'en';
+        return true;
+      }catch{ return false; }
+    }
+
+    async function translateRequest(body){
+      let lastErr = null;
+      for (const base of MIRRORS){
+        try{
+          const res = await fetch(base.replace(/\/+$/,'') + '/translate', {
+            method:'POST',
+            mode:'cors',
+            headers: { 'Content-Type':'application/json' },
+            body: JSON.stringify(body)
+          });
+          endpointBadge.textContent = base;
+          if (!res.ok){
+            const t = await res.text().catch(()=> '');
+            throw new Error(`${res.status} ${res.statusText} — ${t.slice(0,200)}`);
+          }
+          return await res.json();
+        } catch (e){
+          lastErr = e;
+          // Try next mirror
+        }
+      }
+      throw lastErr || new Error('All mirrors failed.');
+    }
+
+    async function translate(){
+      const q = (srcArea.value || '').trim();
+      if (!q){ setStatus('Enter text to translate.', 'warn'); return; }
+      const target = targetSel.value;
+      if (!target || target === 'auto'){ setStatus('Pick a target language.', 'warn'); return; }
+
+      detectedMeta.textContent = '';
+      translateBtn.disabled = true;
+      setStatus('Translating…');
+
+      try{
+        const data = await translateRequest({
+          q,
+          source: sourceSel.value || 'auto', // keep 'auto' — server will detect
+          target,
+          format: 'text'
+        });
+
+        dstArea.value = data.translatedText || '';
+        // Best-effort show detected language if server exposed it (some mirrors return "detectedLanguage")
+        if (data.detectedLanguage){ detectedMeta.textContent = 'Detected: ' + String(data.detectedLanguage).toUpperCase(); }
+        setStatus('Done', 'ok');
+      }catch(e){
+        console.error(e);
+        setStatus('Error: ' + e.message, 'err');
+      }finally{
+        translateBtn.disabled = false;
+      }
+    }
+
+    function swap(){
+      const s = sourceSel.value;
+      const t = targetSel.value;
+      if (t === 'auto') return;
+      sourceSel.value = t;
+      targetSel.value = (s === 'auto') ? t : s;
+      if (dstArea.value.trim()){
+        srcArea.value = dstArea.value;
+        dstArea.value = '';
+        updateCharCount();
+      }
+    }
+
+    async function copyResult(){
+      if (!dstArea.value) return;
+      try{ await navigator.clipboard.writeText(dstArea.value); setStatus('Copied.', 'ok'); }
+      catch{ setStatus('Clipboard blocked.', 'warn'); }
+    }
+
+    async function pasteSource(){
+      try{
+        const text = await navigator.clipboard.readText();
+        if (text){ srcArea.value = text; updateCharCount(); }
+      }catch{ setStatus('Clipboard blocked.', 'warn'); }
+    }
+
+    function speak(){
+      if (!('speechSynthesis' in window)){ setStatus('Speech not supported.', 'warn'); return; }
+      const text = dstArea.value.trim(); if (!text) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(text);
+      // try to match the target voice
+      const voices = speechSynthesis.getVoices();
+      const tgt = (targetSel.value || '').toLowerCase();
+      const match = voices.find(v => v.lang && v.lang.toLowerCase().startsWith(tgt));
+      if (match) utter.voice = match;
+      speechSynthesis.speak(utter);
+    }
+
+    function downloadTxt(){
+      const blob = new Blob([dstArea.value || ''], { type:'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = `translation_${(targetSel.value || 'xx').toUpperCase()}.txt`;
+      document.body.appendChild(a); a.click(); a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // --- Events
+    translateBtn.addEventListener('click', translate);
+    swapBtn.addEventListener('click', swap);
+    clearBtn.addEventListener('click', ()=>{ srcArea.value=''; updateCharCount(); });
+    pasteBtn.addEventListener('click', pasteSource);
+    copyBtn.addEventListener('click', copyResult);
+    speakBtn.addEventListener('click', speak);
+    downloadBtn.addEventListener('click', downloadTxt);
+    srcArea.addEventListener('input', updateCharCount);
+
+    // --- Init
+    (async function init(){
+      fillLangSelects();
+      updateCharCount();
+      setStatus('Loading languages…');
+      // Try to refresh languages from a live mirror (optional)
+      for (const base of MIRRORS){
+        const ok = await tryLanguagesFromEndpoint(base);
+        if (ok){ endpointBadge.textContent = base; setStatus('Ready', 'ok'); return; }
+      }
+      endpointBadge.textContent = 'fallback list';
+      setStatus('Using fallback language list. Ready.', 'warn');
+    })();
+  </script>
+</body>
+</html>

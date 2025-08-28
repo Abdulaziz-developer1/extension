@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password generator</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="../../images/password.ico">
+</head>
+
+<body>
+  <div class="bg">
+    <h1>Password generator</h1>
+    <input type="number" id="inp1" placeholder="Length (6–32)" min="6" max="32">
+
+    <div class="flex">
+      <input type="checkbox" id="inp2">
+      <p>Include numbers</p>
+    </div>
+
+    <div class="flex">
+      <input type="checkbox" id="inp3">
+      <p>Include uppercase letters</p>
+    </div>
+
+    <button id="btn">Generate</button>
+
+    <!-- Result area -->
+    <div class="flex result-box">
+      <input type="text" id="result" readonly placeholder="Your password will appear here">
+      <button id="copy">Copy</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

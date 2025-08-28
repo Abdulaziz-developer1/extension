@@ -1,0 +1,184 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: radial-gradient(circle at 50% 50%, #0f0f0f, #090909);
+  color: #f1f1f1;
+  font-family: "Fira Code", monospace;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+  gap: 20px;
+}
+
+* {
+  text-decoration: none;
+  transition: all 0.3s;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  background: #ffffff0a;
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-radius: 20px;
+  padding: 30px 35px;
+  box-shadow: 0 8px 25px #00000066, 0 0 15px #00ffa333, inset 0 0 10px #ffffff0d;
+  text-align: center;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+  min-width: 500px;
+}
+
+.search {
+  display: flex;
+  padding: 10px 35px;
+}
+
+.container input {
+  width: 80%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+}
+
+#search {
+  min-width: 20% !important;
+}
+
+.container input::placeholder {
+  color: #fff;
+  font-size: 1.5em;
+}
+
+.container:hover {
+  transform: scale(1);
+  box-shadow: 0 12px 30px #00000080, 0 0 30px #00ffa34d,
+    inset 0 0 20px #ffffff14;
+}
+
+h1 {
+  color: #00ffa3;
+  font-size: 4rem;
+  letter-spacing: 1.5px;
+  text-shadow: 0 0 10px #00ffa3b3;
+}
+
+h2 {
+  color: #00ffa3;
+  text-shadow: 0 0 10px #00ffa3b3;
+  font-size: 2em;
+}
+
+button {
+  background: linear-gradient(145deg, #00ffa3, #00c67f);
+  color: #121212;
+  border: none;
+  padding: 14px 20px;
+  border-radius: 12px;
+  margin: 10px 6px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 0.7px;
+  box-shadow: 0 6px 20px #00ffa366, inset 0 0 8px #ffffff1a;
+  transition: all 0.35s ease;
+}
+
+button:hover {
+  background: linear-gradient(145deg, #00c67f, #00ffa3);
+  box-shadow: 0 10px 25px #00ffa399, inset 0 0 15px #ffffff26;
+  transform: translateY(-3px) scale(1.02);
+}
+
+.shortcuts {
+  display: flex;
+  justify-content: space-evenly;
+  width: 10vh !important;
+  min-width: 0;
+  height: 100vh;
+  align-items: center;
+  position: absolute;
+  padding: 30px;
+  right: 0;
+  flex-direction: column;
+}
+
+#shortcuts {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  overflow-y: auto;
+  overflow-x: hidden;
+  height: 80vh;
+  padding: 20px;
+  flex-direction: column;
+}
+
+#shortcuts::-webkit-scrollbar {
+  width: 5px;
+  background: transparent;
+}
+
+#shortcuts::-webkit-scrollbar-thumb {
+  width: 0.1px;
+  background-color: #00ffa3;
+  border: 5px solid #fff;
+  border-radius: 10px;
+}
+
+.shortcut {
+  color: #fff;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 70px;
+  align-items: center;
+  gap: 10px;
+}
+
+.shortcut img {
+  width: 50px;
+  height: 50px;
+  border-radius: 30px;
+}
+
+#addBtn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.apps{
+  left: 0;
+  justify-content: center;
+  padding: 20px 20px;
+}
+
+#apps{
+  height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+}
+
+.app {
+  color: #fff;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  height: 70px;
+  align-items: center;
+  gap: 10px;
+}
+
+.app img {
+  width: 50px;
+  height: 50px;
+}

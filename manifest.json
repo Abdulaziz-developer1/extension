@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Abdulaziz's Extension",
+  "version": "1.0",
+  "description": "An Extension For New Tab with apps",
+  "permissions": [
+    "storage",
+    "notifications",
+    "alarms"
+  ],
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "apps/*/index.html",
+        "apps/*/*.js",
+        "apps/*/*.css",
+        "images/*"
+      ],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
