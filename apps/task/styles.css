@@ -106,7 +106,7 @@ button:hover {
 
 .listItem{
     cursor: pointer;
-    width: 250px;
-    border: 1px solid gray;
+    width: 100%;
+    margin-left: -30px;
     height: 30px;
 }
