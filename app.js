@@ -88,7 +88,9 @@ function newtimer() {
   let minutes = str(newTime.getMinutes());
   let seconds = str(newTime.getSeconds());
   time.innerHTML = `${hours}:${minutes}:${seconds}`;
-  date.innerHTML = `${newTime.getDate()}/${newTime.getMonth()}/${newTime.getFullYear()}`;
+  date.innerHTML = `${str(newTime.getDate())}/${str(
+    newTime.getMonth()
+  )}/${newTime.getFullYear()}`;
 }
 
 newtimer();
