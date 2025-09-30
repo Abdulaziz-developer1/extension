@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Chat App - Multi Chat</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/7498/7498935.png">
+  <style>
+    ::-webkit-scrollbar {
+      width: 5px;
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      width: 5px;
+      background: gray;
+    }
+
+    :root {
+      --bg-color: #0f0f0f;
+      --sidebar-bg: #1a1a1a;
+      --user-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --bot-bg: #2d2d2d;
+      --text-color: #f8f9fa;
+      --user-text: #fff;
+      --bot-text: #e0e0e0;
+      --btn-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --btn-primary-hover: linear-gradient(135deg, #4338ca 0%, #6d28d9 100%);
+      --radius-md: 12px;
+      --border-color: #333;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--sidebar-bg);
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid #2a2a2a;
+      transition: width 0.3s;
+      overflow: hidden;
+    }
+
+    .sidebar.collapsed {
+      width: 60px;
+    }
+
+    .sidebar.collapsed .sidebar-header h2 {
+      display: none;
+    }
+
+    .sidebar.collapsed .new-chat-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .sidebar.collapsed .new-chat-btn span {
+      display: none;
+    }
+
+    .sidebar.collapsed .chat-item span,
+    .sidebar.collapsed .chat-item .chat-actions {
+      display: none;
+    }
+
+    .sidebar.collapsed .chat-item::before {
+      content: "💬";
+      font-size: 16px;
+      margin-left: -7px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .toggle-sidebar {
+      background: none;
+      border: none;
+      color: var(--text-color);
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .new-chat-btn {
+      margin: 12px;
+      cursor: pointer;
+      padding: 10px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--btn-primary);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .chat-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 0 12px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat-item {
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: #262626;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .chat-item.active {
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    }
+
+    /* Chat container */
+    .chat-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      background: #1f1f1f;
+      padding: 16px;
+      font-size: 18px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .chat-header-actions {
+      margin-left: auto;
+      display: flex;
+      gap: 8px;
+    }
+
+    .chat-header-actions button {
+      padding: 6px;
+      border-radius: 6px;
+      border: none;
+      background: #3a3a3a;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      background: linear-gradient(to bottom, #0f0f0f 0%, #1a1a1a 100%);
+    }
+
+    .message {
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      max-width: 75%;
+      position: relative;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .message.user {
+      align-self: flex-end;
+      background: var(--user-bg);
+      color: var(--user-text);
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: var(--bot-bg);
+      color: var(--bot-text);
+    }
+
+    .copy-btn {
+      position: absolute;
+      bottom: 5px;
+      right: 5px;
+      font-size: 11px;
+      padding: 3px 6px;
+      cursor: pointer;
+      border: none;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      border-radius: 6px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .message:hover .copy-btn {
+      opacity: 1;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 12px;
+      padding: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .input-area textarea {
+      flex: 1;
+      padding: 10px;
+      border-radius: var(--radius-md);
+      border: 1px solid #333;
+      background: #262626;
+      color: var(--text-color);
+      resize: none;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .send-btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: var(--radius-md);
+      background: var(--btn-primary);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .send-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>Chats</h2>
+      <button class="toggle-sidebar" id="toggleSidebar">☰</button>
+    </div>
+    <button class="new-chat-btn" id="newChatBtn">➕ <span>New Chat</span></button>
+    <div class="chat-list" id="chatList"></div>
+  </div>
+
+  <div class="chat-container">
+    <div class="chat-header">
+      <span id="chatTitle">Select a chat</span>
+      <div class="chat-header-actions">
+        <button id="editChatBtn" title="Edit Chat">✏️</button>
+        <button id="deleteChatBtn" title="Delete Chat">🗑️</button>
+        <button id="exportChatBtn" title="Export Chat">📤</button>
+      </div>
+    </div>
+    <div class="messages" id="messages"></div>
+    <div class="input-area">
+      <textarea id="userMessage" placeholder="Type your message..." rows="1"></textarea>
+      <button class="send-btn" id="sendBtn" disabled>Send</button>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://apiaichatbot.vercel.app/api/chat";
+    const messagesDiv = document.getElementById("messages");
+    const userMessage = document.getElementById("userMessage");
+    const sendBtn = document.getElementById("sendBtn");
+    const newChatBtn = document.getElementById("newChatBtn");
+    const chatListDiv = document.getElementById("chatList");
+    const chatTitle = document.getElementById("chatTitle");
+    const sidebar = document.getElementById("sidebar");
+    const exportChatBtn = document.getElementById("exportChatBtn");
+    const editChatBtn = document.getElementById("editChatBtn");
+    const deleteChatBtn = document.getElementById("deleteChatBtn");
+
+    let chats = JSON.parse(localStorage.getItem("multiChats")) || [];
+    let currentChatId = null;
+
+    function saveChats() { localStorage.setItem("multiChats", JSON.stringify(chats)); }
+    function getCurrentChat() { return chats.find(c => c.id === currentChatId); }
+    function updateHeader() {
+      const chat = getCurrentChat();
+      chatTitle.textContent = chat ? chat.name : "Select a chat";
+    }
+    function updateSendButton() { sendBtn.disabled = !userMessage.value.trim(); }
+
+    userMessage.addEventListener('input', () => {
+      userMessage.style.height = 'auto';
+      userMessage.style.height = Math.min(userMessage.scrollHeight, window.innerHeight * 0.5) + 'px';
+      updateSendButton();
+    });
+
+    function renderChatList() {
+      chatListDiv.innerHTML = "";
+      chats.forEach(chat => {
+        const item = document.createElement("div");
+        item.className = "chat-item" + (chat.id === currentChatId ? " active" : "");
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = chat.name;
+        item.appendChild(nameSpan);
+        item.onclick = () => {
+          currentChatId = chat.id;
+          renderChatList();
+          renderMessages();
+          updateHeader();
+        };
+        chatListDiv.appendChild(item);
+      });
+    }
+
+    function renderMessages() {
+      messagesDiv.innerHTML = "";
+      const chat = getCurrentChat();
+      if (!chat) return;
+      chat.messages.forEach(msg => {
+        addMessage(msg.content, msg.role, !msg.isRead, msg);
+      });
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function addMessage(content, type, animate = true, msgObj = null) {
+      const div = document.createElement("div");
+      div.className = "message " + type;
+      div.textContent = content;
+      messagesDiv.appendChild(div);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+      if (msgObj) msgObj.isRead = true;
+      saveChats();
+    }
+
+    async function sendMessage() {
+      const text = userMessage.value.trim();
+      if (!text) return;
+      if (!currentChatId) createNewChat();
+      const chat = getCurrentChat();
+      if (!chat) return;
+      const userMsg = { role: "user", content: text, isRead: true };
+      chat.messages.push(userMsg);
+      addMessage(text, "user");
+      userMessage.value = "";
+      updateSendButton();
+      saveChats();
+      try {
+        const response = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ messages: chat.messages }),
+        });
+        const data = await response.json();
+        const replyText = data.reply || "⚠️ No reply from backend.";
+        const botMsg = { role: "assistant", content: replyText, isRead: true };
+        chat.messages.push(botMsg);
+        addMessage(replyText, "bot");
+        saveChats();
+      } catch (err) {
+        console.error("❌ Frontend error:", err);
+        const errorMsg = { role: "assistant", content: "⚠️ Connection error.", isRead: true };
+        chat.messages.push(errorMsg);
+        addMessage(errorMsg.content, "bot");
+        saveChats();
+      }
+    }
+
+    function createNewChat() {
+      const id = Date.now() + Math.random();
+      const name = "Chat " + (chats.length + 1);
+      const chat = { id, name, messages: [] };
+      chats.unshift(chat);
+      currentChatId = id;
+      saveChats();
+      renderChatList();
+      renderMessages();
+      updateHeader();
+    }
+
+    exportChatBtn.addEventListener("click", () => {
+      const chat = getCurrentChat();
+      if (!chat) return alert("Select a chat first");
+      let txtContent = "";
+      chat.messages.forEach(m => {
+        const role = m.role === "user" ? "User" : "Reply";
+        txtContent += `${role}: ${m.content}\n`;
+      });
+      const blob = new Blob([txtContent], { type: "text/plain" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `${chat.name}.txt`;
+      a.click();
+      URL.revokeObjectURL(a.href);
+    });
+
+    editChatBtn.addEventListener("click", () => {
+      const chat = getCurrentChat();
+      if (!chat) return alert("Select a chat first");
+      const newName = prompt("Enter new chat name:", chat.name);
+      if (newName && newName.trim()) {
+        chat.name = newName.trim();
+        saveChats();
+        renderChatList();
+        updateHeader();
+      }
+    });
+
+    deleteChatBtn.addEventListener("click", () => {
+      const chat = getCurrentChat();
+      if (!chat) return alert("Select a chat first");
+      if (confirm(`Delete "${chat.name}"?`)) {
+        chats = chats.filter(c => c.id !== currentChatId);
+        currentChatId = null;
+        saveChats();
+        renderChatList();
+        renderMessages();
+        updateHeader();
+      }
+    });
+
+    sendBtn.addEventListener("click", sendMessage);
+    userMessage.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+    });
+    newChatBtn.addEventListener("click", createNewChat);
+    document.getElementById("toggleSidebar").addEventListener("click", () => {
+      sidebar.classList.toggle("collapsed");
+    });
+
+    renderChatList();
+    renderMessages();
+    updateHeader();
+  </script>
+</body>
+
+</html>

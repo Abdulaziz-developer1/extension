@@ -21,6 +21,18 @@ body {
   padding: 0;
 }
 
+::-webkit-scrollbar {
+  width: 5px;
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  width: 0.1px;
+  background-color: #00ffa3;
+  border: 5px solid #fff;
+  border-radius: 10px;
+}
+
 .container {
   background: #ffffff0a;
   backdrop-filter: blur(20px) saturate(180%);
@@ -118,18 +130,6 @@ button:hover {
   flex-direction: column;
 }
 
-#shortcuts::-webkit-scrollbar {
-  width: 5px;
-  background: transparent;
-}
-
-#shortcuts::-webkit-scrollbar-thumb {
-  width: 0.1px;
-  background-color: #00ffa3;
-  border: 5px solid #fff;
-  border-radius: 10px;
-}
-
 .shortcut {
   color: #fff;
   padding: 5px;
@@ -154,13 +154,14 @@ button:hover {
   justify-content: center;
 }
 
-.apps{
+.apps {
   left: 0;
   justify-content: center;
   padding: 20px 20px;
+  overflow: auto;
 }
 
-#apps{
+#apps {
   height: 90vh;
   display: flex;
   flex-direction: column;
