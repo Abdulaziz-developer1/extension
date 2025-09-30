@@ -8,7 +8,7 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 95vh;
   overflow: hidden;
   position: relative;
   gap: 20px;
@@ -181,4 +181,8 @@ button:hover {
 .app img {
   width: 50px;
   height: 50px;
+}
+
+body > div[style*="bottom"] {
+  display: none !important;
 }

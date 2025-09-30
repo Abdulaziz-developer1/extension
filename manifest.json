@@ -9,7 +9,8 @@
     "alarms"
   ],
   "chrome_url_overrides": {
-    "newtab": "index.html"
+    "newtab": "index.html",
+    "popup": "index.html"
   },
   "web_accessible_resources": [
     {

@@ -23,12 +23,12 @@ let shortcuts = JSON.parse(localStorage.getItem("shortcuts")) || [];
 add.addEventListener("click", function () {
   let name = prompt("Name for your shortcut:");
   let link = prompt(`Link of ${name}:`);
-  let image = prompt(`Link of image of ${name}:`);
+  let icon = prompt(`Link of image of ${name}:`);
   let confirmed = confirm(
     `Do you confirm the shortcut named ${name} is from ${link}`
   );
   if (confirmed && link && name && image) {
-    shortcuts = [...shortcuts, { name: name, link: link, image: image }];
+    shortcuts = [...shortcuts, { name: name, link: link, icon: icon }];
     localStorage.setItem("shortcuts", JSON.stringify(shortcuts));
   } else {
     alert("Operation canceled!");
@@ -105,38 +105,38 @@ let apps = [
   {
     name: "Counter",
     icon: "./images/counter.png",
-    file: "./apps/counter/",
+    file: "./apps/counter/index.html",
   },
   {
     name: "Translator",
     icon: "./images/translator.png",
-    file: "./apps/translator/",
+    file: "./apps/translator/index.html",
   },
   {
     name: "Timer",
     icon: "./images/timer.png",
-    file: "./apps/timer/",
+    file: "./apps/timer/index.html",
   },
   {
     name: "Passworder",
     icon: "./images/password.png",
-    file: "./apps/password/",
+    file: "./apps/password/index.html",
   },
   {
     name: "Tasker",
     icon: "./images/task.png",
-    file: "./apps/task/",
+    file: "./apps/task/index.html",
   },
   {
     name: "Pomodoro",
     icon: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23ff4d4d'/%3E%3Cstop offset='1' stop-color='%23ff9f43'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='14' fill='%230d0d0d'/%3E%3Ccircle cx='32' cy='32' r='20' fill='url(%23g)'/%3E%3Cpath d='M32 14 v18 l10 6' stroke='%23fff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E",
-    file: "./apps/pomodoro/",
+    file: "./apps/pomodoro/index.html",
   },
   {
     name: "ChatbotAI",
     icon: "https://cdn-icons-png.flaticon.com/512/7498/7498935.png",
-    file: "./apps/chatbotAI/"
-  }
+    file: "./apps/chatbotAI/index.html",
+  },
 ];
 
 let appContainer = document.getElementById("apps");
